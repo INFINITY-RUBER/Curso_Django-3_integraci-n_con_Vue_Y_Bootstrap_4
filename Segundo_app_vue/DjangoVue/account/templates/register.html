@@ -1,0 +1,43 @@
+{% extends "base_user_account.html" %}
+
+{% load bootstrap %}
+
+{% block content %}   
+
+
+
+<form method="post" action="{% url 'account:register' %}">
+    {% csrf_token %}
+
+    <div class="login-form">
+
+        
+        {% if user.is_authenticated %}
+            {% include "partials/alert.html" with msj="Estas autenticado " %}
+            <!-- <div class="alert alert-info " >Estas autenticado</div>            -->
+          
+        {% else %}       
+            <!-- <div class="alert alert-info " >NO Estas autenticado</div>            -->
+            {% include "partials/alert.html" with msj="NO Estas autenticado " tag="warning" %}
+
+        {% endif %}
+
+        {% if form.errors %}
+            {% include "partials/alert.html" with msj="Usuario y / o contraseña incorrecta" tag="danger" %}
+             <!-- <div class="alert alert-info " >Usuario y / o contraseña incorrecta</div>            -->
+        {% endif %}       
+                  
+        
+        {{ form | bootstrap }}
+
+        <input type="submit" value="REGISTRAR" class="btn btn-success float-right">
+        
+        
+    </div>
+</form>
+
+<a class="btn btn-link" href="{% url 'login' %}">Login</a>
+
+<!-- <p><a href="{% url 'password_reset' %}">Lost password?</a></p> -->
+
+{% endblock %}

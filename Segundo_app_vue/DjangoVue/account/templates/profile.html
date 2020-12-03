@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+{% load static %}
+
+
+{% block content %}
+
+
+{% if  user.is_authenticated%}
+  
+
+   <div class="card">
+       <div class="card-header">
+           Perfil
+       </div>
+       <div class="card-body">
+
+            
+           <div class="row">
+               <div class="col-md-4 offset-md-4">
+                   {% if user.userprofile %}
+                        <img id="iavatar" class="img-fluid" src="{{ MEDIA_URL }}{{ user.userprofile.avatar }}" >
+                   {% else %}
+                        <img id="iavatar" class="img-fluid" src="{% static 'img/logo.png' %}" >
+                   {% endif %}
+
+                   Thumbanail
+                   {% load thumbnail %}
+                    <img src="{{ user.userprofile.avatar|thumbnail_url:'avatar' }}" alt="" />
+                   
+                   <!-- {% thumbnail user.userprofile.avatar 200x200 upscale as thumb %}
+                    <img src="{{ thumb.url }}"
+                        width="{{ thumb.width }}"
+                        height="{{ thumb.height }}" /> -->
+
+               </div>
+           </div>
+
+           <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <form  method="post" enctype="multipart/form-data" id="favatar"> 
+
+                        <div class="custom-file">                    
+                                {{ form.avatar }}
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+
+                        {% csrf_token %}
+                        {{ form.user }}
+                        
+                        <!-- <input type="submit" value="Enviar" class="btn btn-success "> -->
+                    </form>
+                </div>
+            </div>  
+           <table class="table table-borderless">
+               
+               <tbody>
+                   <tr>
+                       <th>Usuario</th>
+                       <td>{{ user.username }}</td>
+                   </tr>
+                   <tr>
+                       <th>Correo</th>
+                       <td>{{ user.email }}</td>
+                   </tr>
+                   <tr>
+                       <th>Autenticado</th>
+                       <td>{{ user.is_authenticated }}</td>
+                   </tr>
+                   <tr>
+                       <th>Anonimo</th>
+                       <td>{{ user.is_anonymous }}</td>
+                   </tr>
+                  
+               </tbody>
+           </table>
+       </div>
+   </div>
+
+    <!-- <ul>
+        <li><strong>Usuario: </strong> {{ user.username }} </li>
+        <li><strong>Correo: </strong> {{ user.email }} </li>
+        <li><strong>Autenticado: </strong> {{ user.is_authenticated }} </li>
+        <li><strong>Anonimo: </strong> {{ user.is_anonymous }} </li>
+    </ul> -->
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a></p>
+    
+{% endif %}
+    
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+   /* $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });*/
+
+    document.getElementById("customFile").addEventListener("change", function(){
+        filename = this.value.split("\\").pop()
+        console.log(filename)
+        this.nextElementSibling.textContent = filename
+        document.getElementById("favatar").submit()
+    })
+
+    document.getElementById("iavatar").onclick = function(){
+        document.getElementById("customFile").click()
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load bootstrap %}
+
+{% block content %}
+
+
+{% if  user.is_authenticated%}
+<ul>
+    <li><strong>Usuario: </strong> {{ user.username }} </li>
+    <li><strong>Correo: </strong> {{ user.email }} </li>
+    <li><strong>Autenticado: </strong> {{ user.is_authenticated }} </li>
+    <li><strong>Anonimo: </strong> {{ user.is_anonymous }} </li>
+</ul>
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a></p>
+    
+{% endif %}
+    
+
+
+
+
+
+
+{# Assumes you setup the password_reset view in your URLconf #}
+
+{% endblock %}

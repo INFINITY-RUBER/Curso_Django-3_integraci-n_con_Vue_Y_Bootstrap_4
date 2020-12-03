@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% for c in comments %}
+        <div>
+                       
+            {% autoescape off %} 
+            {% endautoescape %}
+            {{ c.text|escape }}
+
+            {{ c.date_posted|date:"D d M Y" }}
+
+            <!-- esto es comentario -->
+           
+        </div>
+    
+    {% endfor %}
+
+    <table>
+        
+        {% for c in comments %}
+            <tr class="{% cycle 'row1' 'row2' 'row3' %}">
+                {{ c.text }}
+            </tr>            
+        {% endfor %}
+            
+    </table>
+  
+    {{ 5|add:'3' }}
+
+    {{ "RUBER HERNANDEZ" | lower }}
+
+   
+
+
+
+{% endblock  %}
+

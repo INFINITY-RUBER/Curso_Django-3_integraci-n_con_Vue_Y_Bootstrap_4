@@ -1,0 +1,59 @@
+{% extends "base_user_account.html" %}
+
+{% load bootstrap %}
+
+{% block content %}
+
+
+
+    
+
+
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <div class="login-form">
+
+        {% if next %}
+            Si puedes acceder a {{ next }}
+            <h3>Autencate!</h3>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% include "partials/alert.html" with msj="Estas autenticado " %}
+            <!-- <div class="alert alert-info " >Estas autenticado</div>            -->
+          
+        {% else %}       
+            <!-- <div class="alert alert-info " >NO Estas autenticado</div>            -->
+            {% include "partials/alert.html" with msj="NO Estas autenticado " tag="warning" %}
+
+        {% endif %}
+
+        {% if form.errors %}
+            {% include "partials/alert.html" with msj="Usuario y / o contraseña incorrecta" tag="danger" %}
+             <!-- <div class="alert alert-info " >Usuario y / o contraseña incorrecta</div>            -->
+        {% endif %}
+        
+                  
+        
+        {{ form.username | bootstrap }}
+        {{ form.password | bootstrap }}
+
+        <input type="submit" value="login" class="btn btn-success float-right">
+        <input type="hidden" name="next" value="{{ next }}">
+        
+        
+    </div>
+
+</form>
+{# Assumes you setup the password_reset view in your URLconf #}
+
+<div class="clearfix"></div>
+
+<br>
+
+<a href="{% url 'password_reset' %}">Lost password?</a>
+<a class="float-right" href="{% url 'account:register' %}">Registrate</a>
+
+
+{% endblock %}

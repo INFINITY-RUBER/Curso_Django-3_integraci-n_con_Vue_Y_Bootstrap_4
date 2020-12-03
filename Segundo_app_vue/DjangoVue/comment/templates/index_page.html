@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% for c in comments_page %}
+        <div>
+                       
+            {% autoescape off %} 
+            {% endautoescape %}
+            {{ c.text|escape }}
+
+            {{ c.date_posted|date:"D d M Y" }}
+
+            <!-- esto es comentario -->
+           
+        </div>
+    
+    {% endfor %}
+
+    <table>
+        
+        {% for c in comments %}
+            <tr class="{% cycle 'row1' 'row2' 'row3' %}">
+                {{ c.text }}
+            </tr>            
+        {% endfor %}
+            
+    </table>
+
+    {% include "partials/pagination.html" with page_obj=comments_page %}
+  
+    {{ 5|add:'3' }}
+
+    {{ "RUBER HERNANDEZ" | lower }}
+
+   
+
+
+
+{% endblock  %}
+
