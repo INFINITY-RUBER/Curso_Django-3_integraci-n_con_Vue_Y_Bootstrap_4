@@ -20,6 +20,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
+from restmanual import views as restmanual
 
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')), # grappelli URLS,
@@ -32,6 +33,9 @@ urlpatterns = [
     path('change-password/',
         auth_views.PasswordChangeView.as_view(template_name='registration/password_change_form.html'),
     ),
+    path('restmanual/demo', restmanual.manualJson),
+    path('restmanual', include('restmanual.urls')),
+
 ]
 
 if settings.DEBUG:

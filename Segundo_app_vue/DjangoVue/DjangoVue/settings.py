@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'import_export',
     'debug_toolbar',
     'listelement',
+    'restmanual',
     'comment',
     'taggit',
     
