@@ -34,7 +34,7 @@ urlpatterns = [
         auth_views.PasswordChangeView.as_view(template_name='registration/password_change_form.html'),
     ),
     path('restmanual/demo', restmanual.manualJson),
-    path('restmanual', include('restmanual.urls')),
+    path('restmanual/', include('restmanual.urls')),
 
 ]
 
