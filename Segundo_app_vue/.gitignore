@@ -138,4 +138,4 @@ dmypy.json
 cython_debug/
 
 # configuracion
-DjangoVue/settings.py
+DjangoVue/DjangoVue/settings.py
