@@ -25,7 +25,9 @@ SECRET_KEY = 'dlq*rrd-g_@kf2kyg(7=8e_v6p&d3screm=(b_i95-_d4*&^kq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'testdjango.com','localhost','127.0.0.1'
+]
 
 CORS_ALLOWED_ORIGINS = True
 
@@ -62,7 +64,8 @@ INSTALLED_APPS = [
     'restmanual',
     'comment',
     'taggit',
-    
+    'django_extensions',   
+    'social_django', 
     
 ]
 
@@ -150,6 +153,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authentication.AuthByEmailBackend',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '755069210548-glqb0sa5pcaa9m86artdqctfqtd80bl5.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'JAWaOhbn1My9fmJHFRsyn5Ib'
+
+SOCIAL_AUTH_TWITTER_KEY = 'Miw9CWAKR21dgP6c3cZoBOXaMF'
+SOCIAL_AUTH_TWITTER_SECRET = 'hzt4Wqgdz2fFscffXUxDJzVYw1QnvyQymjdtOWsAxQKaOWsqoj'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1220607781673132'
+SOCIAL_AUTH_FACEBOOK_SECRET = '3e579d98d4437f53108bab993dcb88b2'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

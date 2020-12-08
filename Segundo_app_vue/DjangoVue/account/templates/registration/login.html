@@ -5,7 +5,6 @@
 {% block content %}
 
 
-
     
 
 
@@ -39,14 +38,28 @@
         {{ form.username | bootstrap }}
         {{ form.password | bootstrap }}
 
-        <input type="submit" value="login" class="btn btn-success float-right">
-        <input type="hidden" name="next" value="{{ next }}">
+        <div class="clearfix">            
+            <input type="submit" value="login" class="btn btn-success float-right">
+            <input type="hidden" name="next" value="{{ next }}">
+        </div>
         
         
     </div>
 
 </form>
 {# Assumes you setup the password_reset view in your URLconf #}
+<div class="row mt-5">
+    <div class="col-md-6 offset-md-3">
+
+        <a class="btn btn-secondary btn-block btn-google" href="{% url "social:begin" "google-oauth2" %}"><i class="fab fa-google" ></i> Google</a>
+        
+        <a class="btn btn-secondary btn-block btn-twitter" href="{% url "social:begin" "twitter" %}"> <i class="fab fa-twitter" ></i> Twitter</a>
+        
+        <a class="btn btn-secondary btn-block btn-facebook" href="{% url "social:begin" "facebook" %}"> <i class="fab fa-facebook" ></i> Facebook</a>
+    </div>
+</div>
+
+
 
 <div class="clearfix"></div>
 

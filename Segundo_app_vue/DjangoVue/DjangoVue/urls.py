@@ -35,6 +35,7 @@ urlpatterns = [
     ),
     path('restmanual/demo', restmanual.manualJson),
     path('restmanual/', include('restmanual.urls')),
+    path('social-auth/', include('social_django.urls', namespace='social'))
 
 ]
 
