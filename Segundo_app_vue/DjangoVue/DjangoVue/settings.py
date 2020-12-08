@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'listelement',
     'restmanual',
     'comment',
+    'cart',
     'taggit',
     'django_extensions',   
     'social_django', 
