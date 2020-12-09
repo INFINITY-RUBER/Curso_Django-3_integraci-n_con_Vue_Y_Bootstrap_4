@@ -2,6 +2,7 @@
 node_modules
 /dist
 settings.py
+config.py
 
 # local env files
 .env.local

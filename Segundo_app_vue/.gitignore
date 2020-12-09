@@ -139,3 +139,5 @@ cython_debug/
 
 # configuracion
 DjangoVue/DjangoVue/settings.py
+DjangoVue/config.py
+DjangoVue/DjangoVue/config/config.json

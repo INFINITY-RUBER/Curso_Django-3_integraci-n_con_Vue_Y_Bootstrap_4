@@ -9,12 +9,27 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+import json
 import os
+from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print()
 
+# IMPORTAR DATOS SENSIBLES 
+with open(os.path.join(BASE_DIR, 'DjangoVue/config/config.json')) as config_file:
+    config = json.load(config_file)
+
+def get_config(setting, config = config ):
+    """Obtenemos la configuracion o falla capturando con ImproperlyConfigured"""
+    try:
+        return config[setting]
+    except KeyError:
+        raise ImproperlyConfigured("El atributo {} no es correcto".format(setting))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -162,16 +177,16 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.facebook.FacebookOAuth2',
 
 ]
+#  CLAVE DE API SOCIAL  ----------------------------
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = get_config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = get_config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '755069210548-glqb0sa5pcaa9m86artdqctfqtd80bl5.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'JAWaOhbn1My9fmJHFRsyn5Ib'
+SOCIAL_AUTH_TWITTER_KEY = get_config('SOCIAL_AUTH_TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = get_config('SOCIAL_AUTH_TWITTER_SECRET')
 
-SOCIAL_AUTH_TWITTER_KEY = 'Miw9CWAKR21dgP6c3cZoBOXaMF'
-SOCIAL_AUTH_TWITTER_SECRET = 'hzt4Wqgdz2fFscffXUxDJzVYw1QnvyQymjdtOWsAxQKaOWsqoj'
-
-SOCIAL_AUTH_FACEBOOK_KEY = '1220607781673132'
-SOCIAL_AUTH_FACEBOOK_SECRET = '3e579d98d4437f53108bab993dcb88b2'
-
+SOCIAL_AUTH_FACEBOOK_KEY = get_config('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = get_config('SOCIAL_AUTH_FACEBOOK_SECRET')
+# ------------------------------------------------
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -201,11 +216,13 @@ MEDIA_URL = '/uploads/'
 
 LOGOUT_REDIRECT_URL= '/accounts/login'
 
-# configuracion de mailtrap
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = 'cb2bab4539d1c9'
-EMAIL_HOST_PASSWORD = 'beaee4a46d9933'
-EMAIL_PORT = '2525'
+# configuracion de mailtrap ----------------------
+EMAIL_HOST = get_config('EMAIL_HOST')
+EMAIL_HOST_USER = get_config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = get_config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = get_config('EMAIL_PORT')
+# ------------------------------------------------
+
 
 LOGGING = {
     'version': 1,
@@ -263,7 +280,8 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
 
-#CONFIGURACIONES DE PAYPAL
-PAYPAL_CLIENT_ID = "AcAKDnUE1volr0U6WRkoim5Lx5mLOOIcafX2hWqKBN0fLur26gPgG_eq7dQ7PyHMpQCg8OWKNt1ReDaZ"
-PAYPAL_CLIENT_SECRET = "ELB-56usoX1ssah2zAgjOtZSD4Hb9NgYYTllJfQyOTkQ01IK41fKmyjLlr4RoiyipqI6Qo76XQyCboai"
-PAYPAL_CLIENT_MODO = "sandbox"
+#CONFIGURACIONES DE PAYPAL -------------------------
+PAYPAL_CLIENT_ID = get_config('PAYPAL_CLIENT_ID')
+PAYPAL_CLIENT_SECRET = get_config('PAYPAL_CLIENT_SECRET')
+PAYPAL_CLIENT_MODO = get_config('PAYPAL_CLIENT_MODO')
+# ------------------------------------------------
