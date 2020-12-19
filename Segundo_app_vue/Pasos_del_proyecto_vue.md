@@ -64,7 +64,7 @@ $ `sudo mysql -u root -p`
 
 Para crear un nuevo usuario corra la siguiente comando:
 
-- `CREATE USER 'djruber'@'%' IDENTIFIED WITH mysql_native_password BY 'Ericsson2018@'; `
+- `CREATE USER 'djruber'@'%' IDENTIFIED WITH mysql_native_password BY 'Eri******2018@'; `
 
 - `CREATE DATABASE djangovueelement;` crea base de datos
 
