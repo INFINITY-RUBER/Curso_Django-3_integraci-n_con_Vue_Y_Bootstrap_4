@@ -64,29 +64,29 @@ $ `sudo mysql -u root -p`
 
 Para crear un nuevo usuario corra la siguiente comando:
 
-> `CREATE USER 'djruber'@'%' IDENTIFIED WITH mysql_native_password BY 'Ericsson2018@'; `
+- `CREATE USER 'djruber'@'%' IDENTIFIED WITH mysql_native_password BY 'Ericsson2018@'; `
 
-> `CREATE DATABASE djangovueelement;` crea base de datos
+- `CREATE DATABASE djangovueelement;` crea base de datos
 
-> `GRANT ALL ON djangovueelement.* TO 'djruber'@'%';  `dar permiso a DB nueva al usuario 
+- `GRANT ALL ON djangovueelement.* TO 'djruber'@'%';  `dar permiso a DB nueva al usuario 
 Ahora tiene una base de datos y una cuenta de usuario, cada una creada específicamente para Django. Necesitamos vaciar los privilegios para que la instancia actual de MySQL conozca los cambios recientes que hicimos con el siguiente comando: 
 - `FLUSH PRIVILEGES;`
 
 
-> `CREATE TABLE [table_name] (column1_name data_type(length) [NOT NULL] [DEFAULT    value] [AUTO_INCREMENT], column2_name data_type(length) [NOT NULL] [DEFAULT value] [AUTO_INCREMENT] ... ); ` ejemplo
+- `CREATE TABLE [table_name] (column1_name data_type(length) [NOT NULL] [DEFAULT    value] [AUTO_INCREMENT], column2_name data_type(length) [NOT NULL] [DEFAULT value] [AUTO_INCREMENT] ... ); ` ejemplo
 - `CREATE TABLE Person (Id int(10) NOT NULL, name varchar(10), last_name varchar(10));`
 tail -f /var/log/mysqld.log
 
-> `SHOW DATABASES; ` # ver las BD creados
-> `USE djangovueelement; ` selecionar la base de datos
-> ` SELECT user FROM mysql.user;` # ver los usuarios creados
-> `SHOW FULL TABLES FROM djangovueelement;` ver las tablas creadas
-> `SELECT * FROM table_name;` # ver datos tabla
-> `describe table_name;` # describe como esta formada la tabla
-> `show tables;`  ver las tablas creadas
-> `INSERT INTO table_name VALUES ('Fulano','1974-04-12');` insertar datos a la tabla
-> `UPDATE comment_comment SET element_id=1 WHERE id=3;`  actualizar un valor
-> `DELETE FROM MyGuests WHERE id=3`  borrar un elemento
+- `SHOW DATABASES; ` # ver las BD creados
+- `USE djangovueelement; ` selecionar la base de datos
+- ` SELECT user FROM mysql.user;` # ver los usuarios creados
+- `SHOW FULL TABLES FROM djangovueelement;` ver las tablas creadas
+- `SELECT * FROM table_name;` # ver datos tabla
+- `describe table_name;` # describe como esta formada la tabla
+- `show tables;`  ver las tablas creadas
+- `INSERT INTO table_name VALUES ('Fulano','1974-04-12');` insertar datos a la tabla
+- `UPDATE comment_comment SET element_id=1 WHERE id=3;`  actualizar un valor
+- `DELETE FROM MyGuests WHERE id=3`  borrar un elemento
 
 
 

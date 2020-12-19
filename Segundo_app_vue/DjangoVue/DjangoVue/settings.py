@@ -94,7 +94,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     
 ]
 
@@ -285,3 +285,6 @@ PAYPAL_CLIENT_ID = get_config('PAYPAL_CLIENT_ID')
 PAYPAL_CLIENT_SECRET = get_config('PAYPAL_CLIENT_SECRET')
 PAYPAL_CLIENT_MODO = get_config('PAYPAL_CLIENT_MODO')
 # ------------------------------------------------
+
+#CONFIGURACIONES DE CARRITO COMPRAS -------------------------
+CART_SESSION_ID = 'cart'

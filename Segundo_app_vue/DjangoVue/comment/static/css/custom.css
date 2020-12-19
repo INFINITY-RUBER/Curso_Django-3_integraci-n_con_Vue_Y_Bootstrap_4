@@ -160,6 +160,23 @@ h2#title::before {
 #coupon .control-label {
     margin-left: .5rem!important;
 }
+/****** END DETAIL ***/
 
+/****** CART SHOPPING ***/
 
+#shoppingCart .count {
+    border-radius: 40%;
+    border: 2px solid #FFF;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    position: absolute;
+    top: 7px;
+    right: 2px;
+    text-align: center;
+    padding-top: 1px;
+    color: #FFF;
+
+}
 /****** END DETAIL ***/

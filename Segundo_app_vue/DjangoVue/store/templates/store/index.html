@@ -42,7 +42,7 @@
                     <div class="product-img">
                         foto:
                         {{ e.elementimages_set.all.0.base_cover_name }}
-                        <a  href="{% url 'store:detail' e.url_clean %}" ></a>
+                        <a  href="{% url 'store:detail' e.url_clean %}"> 
                             
                             {% if e.elementimages_set.all.count %}
                                 <img class="d-block w-100" src="uploads/{{ e.elementimages_set.all.0.base_cover_name }}.custom.jpeg" alt="{{ e.elementimages_set.all.0.title }}" title="{{ e.elementimages_set.all.0.title }}">
@@ -50,7 +50,7 @@
                             {% else %}
                                 <img src="uploads/images/defaul.png" alt="IMAGEN POR DEFECTO" title="IMAGEN POR DEFECTO">
                             {% endif %}
-                                
+                        </a>       
 
                     </div>
                     <div class="product-content">

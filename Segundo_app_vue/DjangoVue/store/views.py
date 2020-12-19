@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.utils import timezone
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, JsonResponse
 
 from taggit.models import Tag
 
@@ -20,6 +20,7 @@ import logging
 from listelement.models import Element, Category
 from .models import Payment, Coupon
 from .forms import MessageForm, CouponForm
+from cart.cart import Cart
 
 
 # Create your views here.
@@ -79,6 +80,15 @@ def detail(request, url_clean, code=None):
         code = ''           
 
     element = get_object_or_404(Element, url_clean=url_clean)
+
+    if request.method == 'GET' and request.GET.get('quantity'):
+        cart = Cart(request)
+        cart.add(element, int(request.GET.get('quantity')))
+        return redirect('store:detail',url_clean=element.url_clean)
+        # for c in cart:
+        #     print(c)
+
+
     messages = element.element_comments.filter(active=True)
     message_form = MessageForm(user=request.user)
     Coupon_form = CouponForm(initial={'element_id':element.id,'code':code})
@@ -98,9 +108,12 @@ def detail(request, url_clean, code=None):
             messages_new.save()
             message_form = MessageForm(user=request.user)
 
+    cart = Cart(request)
+
                     
 
     return render(request, 'store/detail.html',{'element':element,
+                                                'incart': cart.getItem(element.id),
                                                 'message_form': message_form ,
                                                 'messages_new': messages_new,
                                                 'messages': messages,
@@ -385,3 +398,26 @@ def get_valid_coupon(code):
         pass
 
     return coupon
+
+# ---------- Detalle de Carrito
+
+def cart_detail(request): return render(request, 'cart/detail.html', {'cart': Cart(request)})
+
+def cart_remove(request, pk):
+    cart = Cart(request)
+    element = get_object_or_404(Element, pk=pk)
+
+    cart.remove(element)
+    return redirect('store:cart_detail')
+
+def cart_size(request):
+    cart = Cart(request)
+    return JsonResponse({'size': len(cart)})
+
+def add_to_cart(request, pk):
+    element = get_object_or_404(Element,pk = pk)
+
+    cart = Cart(request)
+    cart.add(element=element, quantity=int(request.GET.get('quantity')), override_quantity=True)
+
+    return JsonResponse({})

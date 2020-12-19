@@ -27,6 +27,12 @@ urlpatterns = [
     path('product/coupon_apply', views.coupon_apply, name='coupon_apply'),
     path('product/<slug:url_clean>', views.detail, name='detail'),
     path('product/<slug:url_clean>/<str:code>', views.detail, name='detail'),
+
+    # carrito
+     path('cart_detail', views.cart_detail, name='cart_detail'),
+     path('cart_size', views.cart_size, name='cart_size'),
+     path('cart_remove/<int:pk>', views.cart_remove, name='cart_remove'),
+
     
     # path('product/<int:pk>/<slug:url_clean>', views.DetailView.as_view(), name='detail'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
