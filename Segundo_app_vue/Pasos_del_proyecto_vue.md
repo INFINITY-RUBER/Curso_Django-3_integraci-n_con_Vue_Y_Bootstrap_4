@@ -87,7 +87,8 @@ tail -f /var/log/mysqld.log
 - `INSERT INTO table_name VALUES ('Fulano','1974-04-12');` insertar datos a la tabla
 - `UPDATE comment_comment SET element_id=1 WHERE id=3;`  actualizar un valor
 - `DELETE FROM MyGuests WHERE id=3`  borrar un elemento
-
+- `mysqldump –u usuario_mysql -p nombre_bbdd > fichero_exportación.sql` EXPORTAR base de datos
+- `mysql –u usuario_mysql -p nombre_bbdd < ruta_fichero_importación.sql` IMPORTAR base de datos
 
 
 **MySQL DB API Y CONEXION CON DJANGO**
