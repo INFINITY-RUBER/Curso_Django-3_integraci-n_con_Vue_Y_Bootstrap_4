@@ -1,5 +1,4 @@
-from django.http import request
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.shortcuts import render, redirect,reverse, get_object_or_404
 from django.core.paginator import Paginator
 from django.views import generic
 from django.contrib.auth.decorators import login_required
@@ -10,16 +9,19 @@ from django.http import HttpResponseNotFound, JsonResponse
 
 from taggit.models import Tag
 
+#import paypalrestsdk
+from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
+from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
+from paypalhttp import HttpError
+from decimal import Decimal
 
-import paypalrestsdk
-# from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
-# from paypalcheckoutsdk.orders import OrdersCreateRequest
-# from paypalhttp import HttpError
 import logging
 
 from listelement.models import Element, Category
+
 from .models import Payment, Coupon
 from .forms import MessageForm, CouponForm
+
 from cart.cart import Cart
 
 
@@ -157,108 +159,128 @@ class DetailView(generic.DeleteView):
     slug_url_kwarg = 'url_clean'
 
 
-# def make_pay_paypal(request, pk):
-    
-#     element = get_object_or_404(Element,pk = pk)
+@login_required
+def make_pay_paypal(request, pk, code=None):
 
-#     # Creating Access Token for Sandbox
-#     client_id = settings.PAYPAL_CLIENT_ID
-#     client_secret = settings.PAYPAL_CLIENT_SECRET
-#     # Creating an environment
-#     environment = SandboxEnvironment(client_id=client_id, client_secret=client_secret)
-#     client = PayPalHttpClient(environment)
+    coupon = get_valid_coupon(code) if code else None
 
-#     requestPaypal = OrdersCreateRequest()
+    #cupon invalido
+    if coupon is None and code is not None:
+        return HttpResponseNotFound()
 
-#     requestPaypal.prefer('return=representation')
+    element = get_object_or_404(Element,pk = pk)
 
-#     requestPaypal.request_body (
-#         {
-#             "intent": "CAPTURE",
-#             "purchase_units": [
-#                 {
-#                     "amount": {
-#                         "currency_code": "USD",
-#                         "value": str(element.price)
-#                     }
-#                 }
-#             ],
-#             "application_context":{
-#                 "return_url": "http://localhost:8000/product/paypal/success/%s"%element.id,
-#                 "cancel_url": "http://localhost:8000/product/paypal/cancel"},
-#             }
-#         }
-#     )   
-     
-#     try:
-#         # Call API with your client and get a response for your call
-#         response = client.execute(requestPaypal)
+    if coupon:
+        return_url = "http://127.0.0.1:8000/product/paypal/success/%s/%s"%(element.id,coupon.code)
+        price = round(element.get_price_after_discount(coupon),2)
+    else:
+        return_url = "http://127.0.0.1:8000/product/paypal/success/%s"%element.id
+        price = element.price
 
-#         if response.result.status == "CREATED":
-#             approval_url = str(response.result.links[1].href)
-#             print(approval_url)
-#             return render(request, 'store/paypal/buy.html', {'element': element,'approval_url': approval_url})
+    client_id = settings.PAYPAL_CLIENT_ID
+    client_secret = settings.PAYPAL_CLIENT_SECRET
 
-#         print ('Order With Complete Payload:')
-#         print ('Status Code:', response.status_code)
-#         print ('Status:', response.result.status)
-#         print ('Order ID:', response.result.id)
-#         print ('Intent:', response.result.intent)
-#         print ('Links:')
-#         # for link in response.result.links:
-#         #     print('\t{}: {}\tCall Type: {}'.format(link.rel, link.href, link.method))
-#         #     print ('Total Amount: {} {}'.format(response.result.purchase_units[0].amount.currency_code,
-#         #     response.result.purchase_units[0].amount.value))
-#         #     # If call returns body in response, you can get the deserialized version from the result attribute of the response
-#         #     order = response.result
-#         #     print (order)
-#     except IOError as ioe:
-#         print (ioe)
-#         if isinstance(ioe, HttpError):
-#             # Something went wrong server-side
-#             print (ioe.status_code)    
+    # Creating an environment
+    environment = SandboxEnvironment(client_id=client_id, client_secret=client_secret)
+    client = PayPalHttpClient(environment)
+
+    requestPayPal = OrdersCreateRequest()
+
+    requestPayPal.prefer('return=representation')
+
+    requestPayPal.request_body (
+        {
+            "intent": "CAPTURE",
+            "purchase_units": [
+                {
+                    "amount": {
+                        "currency_code": "USD",
+                        "value": str(price)
+                    }
+                }
+            ],
+            "application_context": {
+                "return_url": return_url,
+                "cancel_url": "http://127.0.0.1:8000/product/paypal/cancel"
+            }
+        }
+    )
+
+    try:
+        # Call API with your client and get a response for your call
+        response = client.execute(requestPayPal)
+
+        if response.result.status == "CREATED":
+            approval_url = str(response.result.links[1].href)
+            print(approval_url)
+
+            return render(request,'store/paypal/buy.html',{'element': element, 'approval_url':approval_url })
+
+    except IOError as ioe:
+        print (ioe)
+        if isinstance(ioe, HttpError):
+            # Something went wrong server-side
+            print (ioe.status_code)  
 
 
-# @login_required
-# def paypal_success(request,pk):
+@login_required
+def paypal_success(request,pk,code=None):
 
-#     paypalrestsdk.configure({
-#     "mode": settings.PAYPAL_CLIENT_MODO, # sandbox or live
-#     "client_id": settings.PAYPAL_CLIENT_ID,
-#     "client_secret": settings.PAYPAL_CLIENT_SECRET})
-    
-#     element = get_object_or_404(Element, pk = pk)
+    coupon = get_valid_coupon(code) if code else None
 
-#     paymentId = request.GET.get('paymentId')
-#     payerId = request.GET.get('PayerID')
+    client_id = settings.PAYPAL_CLIENT_ID
+    client_secret = settings.PAYPAL_CLIENT_SECRET
 
-#     payment = paypalrestsdk.Payment.find(paymentId)
+    # Creating an environment
+    environment = SandboxEnvironment(client_id=client_id, client_secret=client_secret)
+    client = PayPalHttpClient(environment)
 
-#     try:
-#         if payment.execute({"payer_id": payerId}):
-        
-#             paymentModel = Payment(payment_id=paymentId,
-#             payer_id=payerId,
-#             price=element.price,
-#             element_id=element,
-#             user_id=request.user
-#             )
-            
-#             paymentModel.save()
+    element = get_object_or_404(Element, pk = pk)
 
-#             print("Payment execute successfully")
-#         else:
-#             print(payment.error) # Error Hash
-#     except paypalrestsdk.exceptions.ResourceNotFound as e:
-#         print("Se produjo un error %s"%type(e).__name__ )
+    ordenId = request.GET.get('token')
+    payerId = request.GET.get('PayerID')
 
-    
-#     return render(request, 'store/paypal/success.html')
+    requestPayPal = OrdersCaptureRequest(ordenId)
+
+    try:
+        # Call API with your client and get a response for your call
+        response = client.execute(requestPayPal)
+
+        paymentModel = Payment.create(payment_id=ordenId, 
+            payer_id=payerId,
+            price=element.price,
+            element_id=element.id,
+            user_id=request.user.id
+        )
+
+        if coupon:
+            paymentModel.coupon = coupon
+            paymentModel.discount = element.get_price_after_discount(coupon)
+            paymentModel.price_discount = element.get_discount(coupon)
+            coupon.active = 0
+            coupon.save()
+
+        paymentModel.save()
+
+        # If call returns body in response, you can get the deserialized version from the result attribute of the response
+        order = response.result.id
+    except IOError as ioe:
+        if isinstance(ioe, HttpError):
+            # Something went wrong server-side
+            print (ioe.status_code)
+            print (ioe.headers)
+            print (ioe)
+        else:
+            # Something went wrong client side
+            print (ioe)
+
+    return render(request, 'store/paypal/success.html')
+
 
 
 # ********** PRIMERA SDK PAYPAL*********************
 @login_required
-def make_pay_paypal(request, pk, code=None):
+def make_pay_paypal_old(request, pk, code=None):
 
     coupon = get_valid_coupon(code) if code else None
 
@@ -317,7 +339,7 @@ def make_pay_paypal(request, pk, code=None):
 
 # ********** PRIMERA SDK PAYPAL*********************
 @login_required
-def paypal_success(request,pk, code=None):
+def paypal_success_old(request,pk, code=None):
 
     coupon = get_valid_coupon(code) if code else None
 
@@ -399,7 +421,7 @@ def get_valid_coupon(code):
 
     return coupon
 
-# ---------- Detalle de Carrito
+# ---------- Detalle de Carrito ---------------------------------
 
 def cart_detail(request): return render(request, 'cart/detail.html', {'cart': Cart(request)})
 
@@ -418,6 +440,6 @@ def add_to_cart(request, pk):
     element = get_object_or_404(Element,pk = pk)
 
     cart = Cart(request)
-    cart.add(element=element, quantity=int(request.GET.get('quantity')), override_quantity=True)
+    item = cart.add(element=element, quantity=int(request.GET.get('quantity')), override_quantity=True)
 
-    return JsonResponse({})
+    return JsonResponse({'e_price':Decimal(item['price']) * item['quantity'],'price':cart.get_total_price()})

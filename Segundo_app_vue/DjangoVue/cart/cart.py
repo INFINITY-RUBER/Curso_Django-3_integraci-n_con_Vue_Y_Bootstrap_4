@@ -50,6 +50,8 @@ class Cart(object):
 
         self.save()
 
+        return self.cart[element_id]
+
     def save(self):
         # marca la sesion como modificada
         self.session.modified = True
